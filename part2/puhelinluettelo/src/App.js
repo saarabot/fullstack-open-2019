@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Filter from './components/Filter';
+import NewContact from './components/NewContact';
+import Contacts from './components/Contacts';
 
 const App = () => {
     const [persons, setPersons] = useState([
@@ -41,48 +43,17 @@ const App = () => {
         setFilter(event.target.value);
     }
 
-    const displayPersons = () => {
-        if(filter.length === 0) {
-            return (
-                persons.map(p => {
-                    return <p key={p.name}>{p.name} {p.number}</p>
-                })
-            )
-        } else {
-            let filtered = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
-            
-            return (
-                filtered.map(p => {
-                    return <p key={p.name}>{p.name} {p.number}</p>
-                })
-            )
-        }
-    }
-
     return (
         <div>
             <h2>Puhelinluettelo</h2>
-            <div >
-                Rajaa näytettäviä
-                <input value={filter} onChange={handleFilterChange}/>
-            </div>
+
             <Filter filter={filter} handleFilterChange={handleFilterChange} />
-            <h3>Lisää uusi</h3>
-            <form onSubmit={addNewContact}>
-                <div>
-                    Nimi: <input value={newName} onChange={handleNameChange}/>
-                    <br />
-                    Numero: <input value={newNumber} onChange={handleNumberChange} />
-                </div>
-                <div>
-                    <button type="submit" >Lisää</button>
-                </div>
-            </form>
-            <h2>Numerot</h2>
-            <div>
-                {displayPersons()}
-                
-            </div>
+            <NewContact 
+                addNewContact={addNewContact}
+                newName={newName} handleNameChange={handleNameChange}
+                newNumber={newNumber} handleNumberChange={handleNumberChange}
+            />
+            <Contacts filter={filter} contacts={persons} />
         </div>
     );
 }

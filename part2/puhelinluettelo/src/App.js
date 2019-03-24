@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Filter from './components/Filter';
 import NewContact from './components/NewContact';
 import Contacts from './components/Contacts';
-import axios from 'axios';
+import personService from './services/persons';
 
 const App = () => {
 
@@ -12,8 +12,8 @@ const App = () => {
     const [ filter, setFilter ] = useState('');
 
     useEffect(() => {
-        axios.get('http://localhost:3001/persons').then(response => {
-            setPersons(response.data);
+        personService.getAll().then(initialPersons => {
+            setPersons(initialPersons);
         })
     }, []);
 
@@ -26,11 +26,34 @@ const App = () => {
                 name: newName,
                 number: newNumber
             };
-            setPersons(persons.concat(newContact));
+            personService.create(newContact).then(response => {
+                setPersons(persons.concat(response));
+            })
             setNewName('');
             setNewNumber('');
         } else {
-            alert(`${newName} on jo luettelossa`);
+            if(window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)){
+                const newData = {
+                    ...found[0],
+                    name: newName,
+                    number: newNumber
+                };
+                personService.update(found[0].id, newData).then(response => {
+                    setPersons(persons.map(p => p.id !== response.id ? p : response ));
+                    setNewName('');
+                    setNewNumber('');
+                });
+            }
+        }
+    }
+
+    const confirmDelete = (id, name) => {
+        if(window.confirm(`Poistetaanko ${name}?`)) {
+            personService.del(id).then(() => {
+                personService.getAll().then(response => {
+                    setPersons(response);
+                })
+            })
         }
     }
 
@@ -56,7 +79,7 @@ const App = () => {
                 newName={newName} handleNameChange={handleNameChange}
                 newNumber={newNumber} handleNumberChange={handleNumberChange}
             />
-            <Contacts filter={filter} contacts={persons} />
+            <Contacts filter={filter} contacts={persons} confirmDelete={confirmDelete}/>
         </div>
     );
 }

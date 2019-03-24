@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import Note from './components/Note';
+import Notification from './components/Notification';
 import noteService from './services/notes';
 
 const App = () => {
     const [ notes, setNotes ] = useState([]);
     const [newNote, setNewNote] =useState('uusi muistiinpano...');
     const [showAll, setShowAll] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('virhe--');
 
     useEffect(() => {
         noteService.getAll()
@@ -28,6 +30,10 @@ const App = () => {
                     })
                     .catch(e => {
                         console.log(e);
+                        setErrorMessage(`muistiinpano '${note.content}' poistettu palvelimelta`);
+                        setTimeout(() => {
+                            setErrorMessage(null);
+                        }, 5000);
                     });
     }
 
@@ -63,9 +69,25 @@ const App = () => {
         setNewNote(event.target.value);
     }
 
+    const Footer = () => {
+        const footerStyle = {
+            color: 'green',
+            fontStyle: 'italic',
+            fontSize: 16
+        };
+
+        return (
+            <div style={footerStyle}>
+                <br/>
+                <em>Note app</em>
+            </div>
+        )
+    }
+
     return (
         <div>
             <h1>Muistiinpanot</h1>
+            <Notification message={errorMessage} />
             <div>
                 <button onClick={() => setShowAll(!showAll)}>näytä {showAll ? 'vain tärkeät' : 'kaikki'}</button>
             </div>
@@ -74,6 +96,7 @@ const App = () => {
                 <input value={newNote} onChange={handleNoteChange}/>
                 <button type="submit">Tallenna</button>
             </form>
+            <Footer />
         </div>
     )
 }

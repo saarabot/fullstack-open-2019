@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+var morgan = require('morgan');
 
 let persons = [
     {
@@ -29,7 +30,9 @@ const requestLogger = (req, res, next) => {
 }
 
 app.use(bodyParser.json());
-app.use(requestLogger);
+//app.use(requestLogger);
+morgan.token('body', function(req, res) { return req.body });
+app.use(morgan(':body'));
 
 app.get('/info', (req, res) => {
     const date = new Date();

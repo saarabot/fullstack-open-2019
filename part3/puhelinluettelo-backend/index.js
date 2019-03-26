@@ -31,7 +31,8 @@ const requestLogger = (req, res, next) => {
 
 app.use(bodyParser.json());
 //app.use(requestLogger);
-morgan.token('body', function(req, res) { return req.body });
+morgan.token('body', function(req, res) { return JSON.stringify(req.body) });
+app.use(morgan('tiny'));
 app.use(morgan(':body'));
 
 app.get('/info', (req, res) => {

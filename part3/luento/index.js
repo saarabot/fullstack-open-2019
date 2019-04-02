@@ -1,7 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors');
 app.use(bodyParser.json());
+app.use(cors());
+app.use(express.static('build'));
 
 let notes = [
     {
@@ -28,11 +31,11 @@ app.get('/', (req, res) => {
     res.send('<h1>Hello</h1>');
 });
 
-app.get('/notes', (req, res) => {
+app.get('/api/notes', (req, res) => {
     res.json(notes);
 });
 
-app.get('/notes/:id', (req, res) => {
+app.get('/api/notes/:id', (req, res) => {
     const id = Number(req.params.id);
     const note = notes.find(note => note.id === id);
     if(note) {
@@ -42,9 +45,8 @@ app.get('/notes/:id', (req, res) => {
     }
 });
 
-app.delete('/notes/:id', (req, res) => {
+app.delete('/api/notes/:id', (req, res) => {
     const id = Number(req.params.id);
-    console.log('del');
     notes = notes.filter(note => note.id !== id);
 
     res.status(204).end();
@@ -55,8 +57,7 @@ const generateId = () => {
     return maxId +1;
 }
 
-app.post('/notes', (req, res) => {
-    console.log(req);
+app.post('/api/notes', (req, res) => {
     if(!req.body.content) {
         return res.status(400).json({
             error: 'content missing'
@@ -64,7 +65,7 @@ app.post('/notes', (req, res) => {
     }
     const note = {
         content: req.body.content,
-        importand: req.body.important || false,
+        important: req.body.important || false,
         date: new Date(),
         id: generateId()
     }
@@ -72,6 +73,21 @@ app.post('/notes', (req, res) => {
     res.json(note);
 })
 
-const port = 3001;
+app.put('/api/notes/:id', (req, res) => {
+    const id = Number(req.params.id);
+    
+    let note = notes.find(note => note.id === id);
+    note = {
+        important: !note.important,
+        content: note.content,
+        date: note.date,
+        id: note.id
+    }
+    notes = notes.filter(note => note.id !== id);
+    notes = notes.concat(note);
+    res.json(note);
+})
+
+const port = process.env.PORT || 3001;
 app.listen(port);
 console.log(`Server running on port ${port}`);

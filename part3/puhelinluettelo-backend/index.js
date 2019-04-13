@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const morgan = require('morgan');
+const cors = require('cors');
 
 let persons = [
     {
@@ -31,6 +32,9 @@ const requestLogger = (req, res, next) => {
 
 app.use(bodyParser.json());
 //app.use(requestLogger);
+app.use(cors());
+app.use(express.static('build'));
+
 morgan.token('body', function(req, res) { return JSON.stringify(req.body) });
 app.use(morgan('tiny'));
 app.use(morgan(':body'));
@@ -104,7 +108,7 @@ const unknownEndpoint = (req, res) => {
 
 app.use(unknownEndpoint);
 
-const port = 3001;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

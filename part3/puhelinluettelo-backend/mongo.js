@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 if(process.argv.length<3) {
     console.log('not enough parameters');
     process.exit(1);
-};
+}
+
 let type = 1;
 let name = '';
 let number = ''
@@ -40,7 +41,7 @@ if(type === 1) {
         name: name,
         number: number
     });
-    contact.save().then(response => {
+    contact.save().then(() => {
         console.log(`Added  ${name} number ${number} to phonebook`);
         mongoose.connection.close();
     });

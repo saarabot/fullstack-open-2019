@@ -37,7 +37,7 @@ Note.find({}).then(result => {
     });
     //mongoose.connection.close();
 });
-*/ 
+*/
 
 Note.find({ important: true }).then(result => {
     result.forEach(note => {

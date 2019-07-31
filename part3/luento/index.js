@@ -40,11 +40,8 @@ app.delete('/api/notes/:id', (req, res) => {
     }).catch(err => next(err));
 });
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
     const body = request.body;
-    if(body.content === undefined) {
-        return response.status(400).json({ error: 'content missing' });
-    }
 
     const note = new Note({
         content: body.content,
@@ -52,31 +49,14 @@ app.post('/api/notes', (request, response) => {
         date: new Date(),
     })
 
-    note.save().then(savedNote => {
-        response.json(savedNote.toJSON());
-    })
+    note
+        .save()
+        .then(savedNote => savedNote.toJSON())
+        .then(formatted => {
+            response.json(formatted);
+        })
+        .catch(err => next(err));
 });
-
-const generateId = () => {
-    const maxId = notes.length > 0 ? Math.max(...notes.map(n => n.id)) : 0;
-    return maxId +1;
-}
-
-app.post('/api/notes', (req, res) => {
-    if(!req.body.content) {
-        return res.status(400).json({
-            error: 'content missing'
-        });
-    }
-    const note = {
-        content: req.body.content,
-        important: req.body.important || false,
-        date: new Date(),
-        id: generateId()
-    }
-    notes = notes.concat(note);
-    res.json(note);
-})
 
 app.put('/api/notes/:id', (req, res) => {
     const body = req.params.body;
@@ -104,6 +84,8 @@ const errorHandler = (error, request, response, next) => {
     console.log(error.message);
     if(error.name === 'CastError' && error.kind === 'ObjectId') {
         return response.status(400).send({ error: 'malformatted id' });
+    } else if(error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message });
     }
 
     next(error);

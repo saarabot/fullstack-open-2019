@@ -19,6 +19,7 @@ const App = () => {
         personService.getAll().then(initialPersons => {
             setPersons(initialPersons);
         }).catch(e => {
+            console.log(e);
             setMessage('Tapahtui virhe');
             setNotificationType(2);
             setTimeout(() => {

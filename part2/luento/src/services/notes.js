@@ -5,7 +5,7 @@ import axios from 'axios';
 const baseUrl = '/api/notes'; 
 
 const getAll = () => {
-    return axios.get(baseUrl).then(response => response.data);
+    return axios.get(baseUrl).then(response => response.data).catch(er => console.log(er));
 }
 
 const create = newObject => {

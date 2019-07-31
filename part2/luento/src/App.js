@@ -12,15 +12,18 @@ const App = () => {
     useEffect(() => {
         noteService.getAll()
                     .then(initialNotes => {
+                        console.log(initialNotes);
                         setNotes(initialNotes);
                     })
                     .catch(e => {
+                        console.log('error in getAll');
                         console.log(e);
                     })
     }, []);
 
-    const notesToShow = showAll ? notes : notes.filter(note => note.important);
-
+    let notesToShow = showAll ? notes : notes.filter(note => note.important);
+    //console.log(notesToShow);
+    notesToShow  = notesToShow === undefined ? [] : notesToShow;
     const toggleImportanceOf = id => {
         const note = notes.find(n => n.id === id);
         const changedNote = { ...note, important: !note.important };

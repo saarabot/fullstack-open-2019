@@ -1,55 +1,60 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const cors = require('cors');
+const Note = require('./models/note');
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static('build'));
 
-let notes = [
-    {
-      id: 1,
-      content: 'HTML on helppoa',
-      date: '2017-12-10T17:30:31.098Z',
-      important: true,
-    },
-    {
-      id: 2,
-      content: 'Selain pystyy suorittamaan vain javascriptiä',
-      date: '2017-12-10T18:39:34.091Z',
-      important: false,
-    },
-    {
-      id: 3,
-      content: 'HTTP-protokollan tärkeimmät metodit ovat GET ja POST',
-      date: '2017-12-10T19:20:14.298Z',
-      important: true,
-    },
-];
-
-app.get('/', (req, res) => {
-    res.send('<h1>Hello</h1>');
-});
-
 app.get('/api/notes', (req, res) => {
-    res.json(notes);
+    console.log('get notes');
+    let notes = [];
+    Note.find({}).then(response => {
+        console.log(response[0].toJSON());
+        response.forEach(element => {
+            notes.push(element);
+        });
+        res.json(notes);
+        //response.json(note.toJSON());
+    });
 });
 
 app.get('/api/notes/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const note = notes.find(note => note.id === id);
-    if(note) {
-        res.json(note);
-    } else {
-        res.status(404).end();
-    }
+    Note.findById(req.params.id).then(note => {
+        //console.log(response);
+        if(note) {
+            res.json(note.toJSON());
+        } else {
+            res.status(404).end();
+        }
+    }).catch(er => next(er));
 });
 
 app.delete('/api/notes/:id', (req, res) => {
-    const id = Number(req.params.id);
-    notes = notes.filter(note => note.id !== id);
+    Note.findByIdAndRemove(req.params.id).then(response => {
+        //console.log(response);
+        res.status(204).end();
+    }).catch(err => next(err));
+});
 
-    res.status(204).end();
+app.post('/api/notes', (request, response) => {
+    const body = request.body;
+    if(body.content === undefined) {
+        return response.status(400).json({ error: 'content missing' });
+    }
+
+    const note = new Note({
+        content: body.content,
+        important: body.important || false,
+        date: new Date(),
+    })
+
+    note.save().then(savedNote => {
+        response.json(savedNote.toJSON());
+    })
 });
 
 const generateId = () => {
@@ -74,20 +79,44 @@ app.post('/api/notes', (req, res) => {
 })
 
 app.put('/api/notes/:id', (req, res) => {
-    const id = Number(req.params.id);
-    
-    let note = notes.find(note => note.id === id);
-    note = {
-        important: !note.important,
-        content: note.content,
-        date: note.date,
-        id: note.id
-    }
-    notes = notes.filter(note => note.id !== id);
-    notes = notes.concat(note);
-    res.json(note);
+    const body = req.params.body;
+
+    const note = {
+        content: body.content,
+        important: body.important,
+    };
+
+    Note.findByIdAndUpdate(req.params.id, note, { new: true }).then( updated => {
+        res.json(updated.toJSON());
+    }).catch(error => next(error));
+
+    /*
+    Note.findOne({_id: req.params.id}).then(note => {
+        note.important = !note.important;
+        note.save().then( updatedNote => {
+            res.json(updatedNote.toJSON());
+        })
+    })*/
+
 })
 
-const port = process.env.PORT || 3001;
-app.listen(port);
-console.log(`Server running on port ${port}`);
+const errorHandler = (error, request, response, next) => {
+    console.log(error.message);
+    if(error.name === 'CastError' && error.kind === 'ObjectId') {
+        return response.status(400).send({ error: 'malformatted id' });
+    }
+
+    next(error);
+};
+
+app.use(errorHandler);
+
+const unknownEndPoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' });
+}
+
+app.use(unknownEndPoint);
+
+const PORT = process.env.PORT;
+app.listen(PORT);
+console.log(`Success! Server running on port ${PORT}`);

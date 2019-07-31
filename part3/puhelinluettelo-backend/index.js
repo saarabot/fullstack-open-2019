@@ -80,24 +80,29 @@ app.post('/api/persons', (req, res, next) => {
         })
     }
     Contact.find({name: body.name}).then(found => {
-        if(found) {
-            //res.status(400).send({ error: 'name exists'});
+        console.log(found);
+        if(found.length > 0) {
+            res.status(400).send({ error: 'name exists'});
         } else {
-            console.log('ok');
+            const newContact = new Contact({
+                name: body.name,
+                number: body.number
+            });
+        
+            newContact
+                .save()
+                .then(saved => {
+                    console.log('saved');
+                    res.json(saved)
+                })
+                .catch(err => next(err));
+            
         }
     }).catch(er => {
         next(er);
     });
 
-    const newContact = new Contact({
-        name: body.name,
-        number: body.number
-    });
-
-    newContact.save().then(saved => {
-        console.log('saved');
-        res.json(saved);
-    })
+    
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -122,9 +127,11 @@ const unknownEndpoint = (req, res) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
-    console.log(error.message);
+    console.log(error);
     if(error.name === 'CastError' && error.kind === 'ObjectId') {
         return response.status(400).send({ error: 'bad id'});
+    } else if(error.name === 'ValidationError') {
+        return response.status(400).send({ error: 'input error'});
     }
     next(error);
 };

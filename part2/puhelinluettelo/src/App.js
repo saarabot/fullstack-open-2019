@@ -45,7 +45,7 @@ const App = () => {
                     setMessage(null);
                 }, 5000);
             }).catch(e => {
-                setMessage('Tapahtui virhe');
+                setMessage(e.response.data.error);
                 setNotificationType(2);
                 setTimeout(() => {
                     setMessage(null);

@@ -5,13 +5,15 @@ const app = express();
 const cors = require('cors');
 const blogRouter = require('./controllers/blog');
 const mongoose = require('mongoose');
+const logger = require('./utils/logger')
+const middleware = require('./utils/middleware');
 
-console.log('connecting: ', config.MONGODB_URI);
+logger.info('connecting: ', config.MONGODB_URI);
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true }).then(() => {
-    console.log('connected.');
+    logger.info('connected.');
 }).catch(err => {
-    console.log('error: ',err.message);
+    logger.error('error: ',err.message);
 });
 
 app.use(cors());
@@ -19,6 +21,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api/blogs', blogRouter);
-
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;

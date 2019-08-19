@@ -23,8 +23,17 @@ const errorHandler = (error, request, response, next) => {
     next(error)
 }
 
+const getToken = (request) => {
+    const auth = request.get('authorization');
+    if(auth && auth.toLowerCase().startsWith('bearer ')) {
+        return auth.substring(7);
+    }
+    return null;
+}
+
 module.exports = {
     requestLogger,
     unknownEndpoint,
-    errorHandler
+    errorHandler,
+    getToken
 }

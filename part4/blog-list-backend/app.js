@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const cors = require('cors');
 const blogRouter = require('./controllers/blog');
+const userRouter = require('./controllers/users');
+const loginRouter = require('./controllers/login');
 const mongoose = require('mongoose');
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware');
@@ -21,6 +23,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api/blogs', blogRouter);
+app.use('/api/users', userRouter);
+app.use('/api/login', loginRouter);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 

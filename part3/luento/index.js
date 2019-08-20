@@ -59,7 +59,7 @@ app.post('/api/notes', (request, response, next) => {
 });
 
 app.put('/api/notes/:id', (req, res, next) => {
-    const body = req.params.body;
+    const body = req.body;
 
     const note = {
         content: body.content,

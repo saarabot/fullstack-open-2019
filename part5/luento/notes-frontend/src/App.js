@@ -16,6 +16,8 @@ const App = () => {
     const [password, setPassword] = useState('');
     const [user, setUser] = useState(null);
 
+    const noteFormRef = React.createRef();
+
     useEffect(() => {
         noteService.getAll()
                     .then(initialNotes => {
@@ -87,6 +89,7 @@ const App = () => {
 
     const addNote = (event) => {
         event.preventDefault();
+        noteFormRef.current.toggleVisibility();
         const noteObject = {
             content: newNote,
             date: new Date().toISOString(),
@@ -137,7 +140,7 @@ const App = () => {
     )
 
     const noteForm = () => (
-        <Togglable buttonLabel="New note">
+        <Togglable buttonLabel="New note" ref={noteFormRef}>
             <NoteForm
                 onSubmit={addNote}
                 value={newNote}

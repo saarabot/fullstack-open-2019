@@ -1,8 +1,55 @@
-import React from 'react'
-const Blog = ({ blog }) => (
-  <div>
-    {blog.title} {blog.author}
-  </div>
-)
+import React, {useState} from 'react'
+import blogService from '../services/blogs';
+
+const Blog = ({ blog, reloadList, loggedUser }) => {
+  const [show, setShow] = useState(false);
+
+  const blogStyle = {
+    paddingTop: '10px',
+    paddingLeft: '5px',
+    border: '2px solid black',
+    marginBottom: '5px',
+    paddingBottom: '5px',
+  };
+  
+  const onClickHandler = (source) => {
+    if(source === 'toggle') {
+      setShow(!show);
+    } else {
+      let temp = blog;
+      temp.likes = temp.likes +1;
+      blogService.addLike(temp).then(res => {
+        reloadList();
+      }).catch(err => {
+        console.log(err);
+      })
+    }
+  };
+
+  const removeBlog = () => {
+    let ok = window.confirm(`remove blog: ${blog.title}`);
+    if(ok) {
+      blogService.remove(blog.id).then(res => {
+        reloadList();
+      }).catch(err => {
+        console.log(err);
+      })
+    }
+  }
+
+  return (
+    <div style={blogStyle}>
+      <div>
+        <p onClick={() => onClickHandler('toggle')} >{blog.title} {blog.author}</p>
+        <div style={show ? {display: 'block'}:{display: 'none'} }>
+          <p>{blog.likes} likes <button onClick={() => onClickHandler('like')}>Like</button></p>
+          <a href={blog.url}>{blog.url}</a>
+          <p>added by {blog.user ? blog.user.username : 'anonymous'}</p>
+          {blog.user.username === loggedUser && <button onClick={removeBlog}>Remove</button>}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default Blog

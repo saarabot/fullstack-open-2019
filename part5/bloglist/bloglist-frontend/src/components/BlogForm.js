@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import blogService from '../services/blogs';
 import Notification from './Notification';
 
-const AddBlog = () => {
+const BlogForm = () => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [url, setUrl] = useState('');
@@ -68,4 +68,4 @@ const AddBlog = () => {
     )
 };
 
-export default AddBlog;
+export default BlogForm;

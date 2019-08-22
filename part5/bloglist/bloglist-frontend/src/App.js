@@ -3,7 +3,8 @@ import Blog from './components/Blog';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
 import login from './services/login';
-import AddBlog from './components/AddBlog';
+import FormBlog from './components/BlogForm';
+import Togglable from './components/Togglable';
 
 const App = () => {
 
@@ -52,6 +53,12 @@ const App = () => {
     }
   }
 
+  const reloadList = () => {
+    blogService.getAll().then(res => {
+      setBlogs(res);
+    });
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
         <div>
@@ -75,8 +82,10 @@ const App = () => {
       <div>
         <h3>{user.username} is logged in <button onClick={logout}><i>logout</i></button></h3>
         <h2>Blogs</h2>
-        <AddBlog />
-        {initialBlogs && initialBlogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+        <Togglable buttonLabel="Add new blog">
+          <FormBlog />
+        </Togglable>
+        {initialBlogs && initialBlogs.sort(function(a,b) {return b.likes - a.likes }).map(blog => <Blog key={blog.id} blog={blog} reloadList={reloadList} loggedUser={user.username}/>)}
       </div>
       )
     }

@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types';
 import blogService from '../services/blogs';
 
 const Blog = ({ blog, reloadList, loggedUser }) => {
@@ -11,14 +12,14 @@ const Blog = ({ blog, reloadList, loggedUser }) => {
     marginBottom: '5px',
     paddingBottom: '5px',
   };
-  
+
   const onClickHandler = (source) => {
     if(source === 'toggle') {
       setShow(!show);
     } else {
       let temp = blog;
       temp.likes = temp.likes +1;
-      blogService.addLike(temp).then(res => {
+      blogService.addLike(temp).then(() => {
         reloadList();
       }).catch(err => {
         console.log(err);
@@ -29,7 +30,7 @@ const Blog = ({ blog, reloadList, loggedUser }) => {
   const removeBlog = () => {
     let ok = window.confirm(`remove blog: ${blog.title}`);
     if(ok) {
-      blogService.remove(blog.id).then(res => {
+      blogService.remove(blog.id).then(() => {
         reloadList();
       }).catch(err => {
         console.log(err);
@@ -41,7 +42,7 @@ const Blog = ({ blog, reloadList, loggedUser }) => {
     <div style={blogStyle}>
       <div>
         <p onClick={() => onClickHandler('toggle')} >{blog.title} {blog.author}</p>
-        <div style={show ? {display: 'block'}:{display: 'none'} }>
+        <div style={show ? { display: 'block' }:{ display: 'none' } }>
           <p>{blog.likes} likes <button onClick={() => onClickHandler('like')}>Like</button></p>
           <a href={blog.url}>{blog.url}</a>
           <p>added by {blog.user ? blog.user.username : 'anonymous'}</p>
@@ -50,6 +51,12 @@ const Blog = ({ blog, reloadList, loggedUser }) => {
       </div>
     </div>
   );
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  reloadList: PropTypes.func.isRequired,
+  loggedUser: PropTypes.string.isRequired
 }
 
 export default Blog

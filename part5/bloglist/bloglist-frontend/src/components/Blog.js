@@ -40,9 +40,11 @@ const Blog = ({ blog, reloadList, loggedUser }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
-        <p onClick={() => onClickHandler('toggle')} >{blog.title} {blog.author}</p>
-        <div style={show ? { display: 'block' }:{ display: 'none' } }>
+      <div className="blogContainer">
+        <p className="title" onClick={() => onClickHandler('toggle')} >
+          {blog.title} {blog.author}
+        </p>
+        <div className="expanded" style={show ? { display: 'block' }:{ display: 'none' } }>
           <p>{blog.likes} likes <button onClick={() => onClickHandler('like')}>Like</button></p>
           <a href={blog.url}>{blog.url}</a>
           <p>added by {blog.user ? blog.user.username : 'anonymous'}</p>

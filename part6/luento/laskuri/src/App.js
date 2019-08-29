@@ -19,6 +19,7 @@ const counterReducer = (state = 0, action) => {
 const store = createStore(counterReducer);
 
 const App = () => {
+  
   return (
     <div className="App">
       <header className="App-header">

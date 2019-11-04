@@ -1,16 +1,44 @@
-import React from 'react'
+import React from 'react';
+import { connect } from 'react-redux';
+import { nullNotification } from '../reducers/notificationReducer';
 
-const Notification = () => {
+const Notification = (props) => {
+
   const style = {
     border: 'solid',
     padding: 10,
     borderWidth: 1
   }
+  const notification = props.notifications;
+  let message = '';
+  
+  console.log(props)
+  if(!notification.action) {
+    return null;
+  }
+  if(notification.action === 'vote') {
+    message = `you voted '${notification.anecdote}'`
+  } else if(notification.action === 'add') {
+    message = `you added '${notification.anecdote}'`
+  }
+  setTimeout(() => {
+    props.nullNotification();
+  }, 5000)
   return (
     <div style={style}>
-      render here notification...
+      {message}
     </div>
   )
 }
 
-export default Notification
+const mapStateToProps = state => {
+  return {
+    notifications: state.notifications
+  }
+}
+
+const mapDispatchToProps = {
+  nullNotification
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notification)

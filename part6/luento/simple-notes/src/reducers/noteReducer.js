@@ -1,5 +1,17 @@
-const noteReducer = (state = [], action) => {
-    console.log(action);
+const initialState = [
+        {
+            content: 'the app state is in redux store',
+            important: true,
+            id: 1
+        },
+        {
+            content: 'state changes are made with actions',
+            important: false,
+            id: 2
+        }
+];
+
+const noteReducer = (state = initialState, action) => {
     switch(action.type) {
         case 'NEW_NOTE':
             return [...state, action.data];

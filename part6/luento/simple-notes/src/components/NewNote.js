@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { createNote } from '../reducers/noteReducer';
 
 const NewNote = (props) => {
@@ -6,7 +7,7 @@ const NewNote = (props) => {
         event.preventDefault();
         const content = event.target.note.value;
         event.target.note.value = '';
-        props.store.dispatch(createNote(content));
+        props.createNote(content);
     };
 
     return (
@@ -17,4 +18,4 @@ const NewNote = (props) => {
     );
 }
 
-export default NewNote;
+export default connect(null, { createNote })(NewNote);

@@ -4,7 +4,7 @@ import Note from './Note';
 import { toggleImportanceOf } from '../reducers/noteReducer';
 ////Container component
 const Notes = (props) => {
-
+    console.log(props)
     return(
         <ul>
             {props.visibleNotes.map(note => 

@@ -4,11 +4,9 @@ import './App.css';
 import NewNote from './components/NewNote';
 import Notes from './components/Notes';
 import VisibilityFilter from './components/VisibilityFilter';
-import noteService from './services/notes';
 import { initializeNotes } from './reducers/noteReducer'
 
 const App = (props) => {
-  const store = props.store;
 
   const mainStyle = {
     padding: '20px',
@@ -17,14 +15,14 @@ const App = (props) => {
   }
 
   useEffect(() => {
-    noteService.getAll().then(notes => props.initializeNotes(notes));
+    props.initializeNotes();
   }, [])
 
   return(
       <div style={mainStyle}>
-          <NewNote store={store} />
-          <VisibilityFilter store={store}/>
-          <Notes store={store} />
+          <NewNote />
+          <VisibilityFilter />
+          <Notes  />
       </div>
   )
 };

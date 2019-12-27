@@ -11,7 +11,7 @@ const Notes = (props) => {
                 <Note
                     key={note.id}
                     note={note}
-                    handleClick={() => props.dispatch(toggleImportanceOf(note.id))}
+                    handleClick={() => props.toggleImportanceOf(note.id)}
                     />
             )}
         </ul>

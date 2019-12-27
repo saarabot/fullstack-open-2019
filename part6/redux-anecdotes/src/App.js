@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {connect} from 'react-redux'
 import AnecdoteList from './components/AnecdoteList';
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
+import anecdoteService from './services/anecdotes';
+import { init } from './reducers/anecdoteReducer'
 
 const App = (props) => {
-  console.log(props)
+
+  useEffect(() => {
+    anecdoteService.getAll().then(res => {
+      props.init(res)
+    })
+  },[])
+
   return (
     <div>
-      
       <Notification />
-      <h2>Anecdotes</h2>
       <AnecdoteList />
       <AnecdoteForm />
     </div>
@@ -25,4 +31,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps,{init})(App)

@@ -19,7 +19,7 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = [], action) => {
   switch(action.type) {
     case 'VOTE':
         const id = action.data.id;
@@ -32,19 +32,24 @@ const reducer = (state = initialState, action) => {
             a.id !== id ? a : likedAnecdote
         );
     case 'ADD':
-      const newAnecdote = {
-        content: action.data.content,
-        id: getId(),
-        votes: 0
-      };
-      state = state.concat(newAnecdote);
+      console.log(action)
+      state = state.concat(action.data);
       return state;
+    case 'INIT': 
+      return action.data;
     default:
       return state;
   }
 }
 
 //ACTIONS
+export const init = (anecdotes) => {
+  return {
+    type: 'INIT',
+    data: anecdotes
+  }
+};
+
 export const voteAnecdote = (id) => {
   return {
     type: 'VOTE',
@@ -52,10 +57,10 @@ export const voteAnecdote = (id) => {
   }
 };
 
-export const addAnecdote = (content) => {
+export const addAnecdote = (data) => {
   return {
     type: 'ADD',
-    data: { content }
+    data
   }
 };
 

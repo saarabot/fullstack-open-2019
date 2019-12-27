@@ -17,9 +17,9 @@ const Notification = (props) => {
     return null;
   }
   if(notification.action === 'vote') {
-    message = `you voted '${notification.anecdote}'`
+    message = `you voted '${notification.anecdote.content}'`
   } else if(notification.action === 'add') {
-    message = `you added '${notification.anecdote}'`
+    message = `you added '${notification.anecdote.content}'`
   }
   setTimeout(() => {
     props.nullNotification();

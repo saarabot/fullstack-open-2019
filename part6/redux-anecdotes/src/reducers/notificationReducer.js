@@ -11,14 +11,14 @@ const reducer = (state = initialState, action) => {
         return {
             ...initialState, 
             action: 'add',
-            anecdote: action.data.anecdote
+            anecdote: action.data
         }
     case 'VOTED_ANECDOTE':
 
         return {
             ...initialState, 
             action: 'vote',
-            anecdote: action.data.anecdote.content
+            anecdote: action.data
         }
     case 'NULL':
         return {...state, action: '', anecdote: '', message: ''};
@@ -28,17 +28,17 @@ const reducer = (state = initialState, action) => {
 }
 
 //ACTIONS
-export const notificateVote = (anecdote) => {
+export const notificateVote = (data) => {
   return {
     type: 'VOTED_ANECDOTE',
-    data: { anecdote }
+    data
   }
 };
 
-export const notificateAdd = (anecdote) => {
+export const notificateAdd = (data) => {
   return {
     type: 'ADDED_ANECDOTE',
-    data: { anecdote }
+    data
   }
 };
 

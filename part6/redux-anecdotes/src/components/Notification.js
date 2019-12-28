@@ -12,18 +12,14 @@ const Notification = (props) => {
   const notification = props.notifications;
   let message = '';
   
-  console.log(props)
   if(!notification.action) {
     return null;
-  }
-  if(notification.action === 'vote') {
-    message = `you voted '${notification.anecdote.content}'`
   } else if(notification.action === 'add') {
-    message = `you added '${notification.anecdote.content}'`
+    message = `you added '${notification.anecdote}'`
+  } else {
+    message = notification.message
   }
-  setTimeout(() => {
-    props.nullNotification();
-  }, 5000)
+
   return (
     <div style={style}>
       {message}

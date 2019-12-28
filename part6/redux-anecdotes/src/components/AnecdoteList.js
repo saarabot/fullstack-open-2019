@@ -1,15 +1,22 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { connect } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer';
 import { notificateVote } from '../reducers/notificationReducer';
+import { init } from '../reducers/anecdoteReducer'
 import Filter from './Filter';
+import anecdoteService from '../services/anecdotes'
 
 const AnecdoteList = (props) => {
     let anecdotes = props.anecdotes
+    useEffect(() => {
 
-    const vote = (id, anectote) => {
-        props.voteAnecdote(id);
-        props.notificateVote(anectote);
+    })
+    const vote = (id, anecdote) => {
+        anecdoteService.vote(id, anecdote).then(res => {
+            props.init()
+            props.notificateVote(`you voted '${res.content}'`, 2)
+        })
+        
     };
 
     return(
@@ -50,7 +57,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
     voteAnecdote,
-    notificateVote
+    notificateVote,
+    init
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(AnecdoteList);

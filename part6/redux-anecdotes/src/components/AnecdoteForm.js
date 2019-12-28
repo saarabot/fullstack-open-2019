@@ -5,18 +5,18 @@ import { notificateAdd } from '../reducers/notificationReducer';
 import anecdoteService from '../services/anecdotes'
 
 const AnecdoteForm = (props) => {
-
     const add = async (event) => {
         event.preventDefault();
         console.log(event.target.anecdote.value)
         const value = event.target.anecdote.value;
+        event.target.anecdote.value = '';
         if(value) {
             const newAnecdote = await anecdoteService.createNew(value);
-            props.addAnecdote(newAnecdote)
-            props.notificateAdd(newAnecdote)
+            props.notificateAdd(newAnecdote, 3)
         }
-        //event.target.anecdote.value = '';
+        
     }
+
     return(
         <div>
             <h2>Create new</h2>

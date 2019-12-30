@@ -1,9 +1,10 @@
 import React from 'react'
+import { Message } from 'semantic-ui-react'
 
 const Notification = ({notification}) => {
     if(notification !== '') {
         return (
-            <p>{notification}</p>
+            <Message success>{notification}</Message>
         )
     } else { return null}
 }

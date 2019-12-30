@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
+import { Form, Button } from 'semantic-ui-react'
 
 const CreateNew = (props) => {
     const [content, setContent] = useState('')
@@ -21,21 +22,21 @@ const CreateNew = (props) => {
     return (
       <div>
         <h2>create a new anecdote</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            content
+        <Form onSubmit={handleSubmit}>
+          <Form.Field>
+            <label>content</label>
             <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
-          </div>
-          <div>
-            author
+          </Form.Field>
+          <Form.Field>
+            <label>author</label>
             <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-          </div>
-          <div>
-            url for more info
+          </Form.Field>
+          <Form.Field>
+            <label>url for more info</label>
             <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
-          </div>
-          <button>create</button>
-        </form>
+          </Form.Field>
+          <Button type="submit">create</Button>
+        </Form>
       </div>
     )
   

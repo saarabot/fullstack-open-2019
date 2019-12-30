@@ -4,8 +4,9 @@ import About from './About'
 import AnecdoteList from './AnecdoteList'
 import CreateNew from './AnecdoteForm'
 import Anecdote from './Anecdote'
+import { Menu } from 'semantic-ui-react'
 
-const Menu = ({anecdotes, addNew}) => {
+const AnecdoteMenu = ({anecdotes, addNew}) => {
 
     const linkStyle = {
       padding: '10px'
@@ -13,11 +14,17 @@ const Menu = ({anecdotes, addNew}) => {
     return (
       <Router>
         <div>
-          <div>
-            <Link style={linkStyle} to="/">home</Link>
-            <Link style={linkStyle} to="/about">about</Link>
-            <Link style={linkStyle} to="/new">create new</Link>
-          </div>
+          <Menu inverted>
+            <Menu.Item link>
+              <Link style={linkStyle} to="/">home</Link>
+            </Menu.Item>
+            <Menu.Item link>
+              <Link style={linkStyle} to="/about">about</Link>
+            </Menu.Item>
+            <Menu.Item link>
+              <Link style={linkStyle} to="/new">create new</Link>
+            </Menu.Item>
+          </Menu>
           <Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
           <Route path="/about" render={() => <About />} />
           <Route path="/new" render={() => <CreateNew addNew={addNew} />} />
@@ -27,4 +34,4 @@ const Menu = ({anecdotes, addNew}) => {
     )
   }
 
-export default Menu
+export default AnecdoteMenu

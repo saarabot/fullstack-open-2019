@@ -1,11 +1,9 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
+import { Table } from 'semantic-ui-react'
 
 const AnecdoteList = (props) => {
     console.log(props)
-    const displayAnecdote = (anecdote) => {
-        props.history.push('anecdotes/'+anecdote.id)
-    }
 
     const liStyle = {
         'textDecoration': 'underline',
@@ -16,11 +14,19 @@ const AnecdoteList = (props) => {
     return (
         <div>
         <h2>Anecdotes</h2>
-        <ul>
-            {props.anecdotes.map(anecdote => 
-                <li style={liStyle} key={anecdote.id} onClick={() => displayAnecdote(anecdote)}><a>{anecdote.content}</a></li>
+        <Table striped celled>
+            <Table.Body>
+            {props.anecdotes.map(anecdote =>
+                <Table.Row key={anecdote.id}>
+                    <Table.Cell>
+                        <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+                    </Table.Cell>
+                </Table.Row>
+                
             )}
-        </ul>
+            </Table.Body>
+        </Table>
+        
         </div>
         
     )

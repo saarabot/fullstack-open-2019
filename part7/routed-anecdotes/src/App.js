@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Footer from './components/Footer'
-import Menu from './components/Menu'
+import AnecdoteMenu from './components/Menu'
 import Notification from './components/Notification'
+import { Container } from 'semantic-ui-react'
 
 const anes = [{
       content: 'If it hurts, do it more often',
@@ -54,12 +55,12 @@ const App = () => {
   }*/
   
   return (
-    <div>
+    <Container>
       <h1>Software anecdotes</h1>
       <Notification notification={notification}/>
-      <Menu anecdotes={anecdotes} addNew={addNew}/>
+      <AnecdoteMenu anecdotes={anecdotes} addNew={addNew}/>
       <Footer />
-    </div>
+    </Container>
   )
 }
 

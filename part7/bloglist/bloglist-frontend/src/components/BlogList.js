@@ -1,16 +1,21 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { initBlogs, deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { initBlogs, deleteBlog, likeBlog, clearBlogs } from '../reducers/blogReducer'
 import Blog from './Blog'
 
 const BlogList = (props) => {
-    const { initBlogs, deleteBlog, blogs, likeBlog } = props
-    let user = {
-        username: 'saara'
-    }
+    const { initBlogs, deleteBlog, blogs, likeBlog, user } = props
+
     useEffect(() => {
         initBlogs()
     }, [])
+
+    useEffect(() => {
+        if(user === undefined) {
+            console.log('user is undefined')
+            clearBlogs()
+        }
+    }, [user])
 
     const reloadList = () => {
         initBlogs()
@@ -41,14 +46,14 @@ const BlogList = (props) => {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
-      blogs: state.blogs
+      blogs: state.blogs,
+      user: state.login.user
     }
   }
 
 const mapDispatchToProps = {
-    initBlogs, deleteBlog, likeBlog
+    initBlogs, deleteBlog, likeBlog, clearBlogs
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlogList)

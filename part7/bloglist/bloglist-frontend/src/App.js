@@ -1,50 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Notification from './components/Notification';
-import blogService from './services/blogs';
-import login from './services/login';
 import FormBlog from './components/BlogForm';
 import Togglable from './components/Togglable';
 import { useField } from './hooks';
 import { connect } from 'react-redux'
 import BlogList from './components/BlogList'
+import { login, setUser, logout } from './reducers/loginReducer'
+import { token } from './reducers/blogReducer'
 
 const App = (props) => {
-
-  //const [username, setUsername] = useState('');
+  const { login, token, setUser, user, isLogged, logout } = props
   const username = useField('text');
   const password = useField('password');
-  //const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
 
-
-  useEffect( () => {
-    console.log(props)
+  useEffect(() => {
     const logged = window.localStorage.getItem('loggedUser');
     if(logged) {
-        const user = JSON.parse(logged);
-        setUser(user);
-        blogService.setToken(user.token);
-        blogService.getAll().then(res => {
-          //setBlogs(res);
-        })
+        let temp = JSON.parse(logged);
+        setUser(temp);
+        token(temp.token);
     }
   }, []);
+
+  useEffect(() => {
+    if(user !== undefined) {
+      window.localStorage.setItem('loggedUser', JSON.stringify(user));
+      setUser(user);
+      token(user.token);
+    }
+  }, [user])
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await login.login({ username: username.value, password: password.value });
-      window.localStorage.setItem(
-          'loggedUser', JSON.stringify(user)
-      );
-      blogService.setToken(user.token);
-      setUser(user);
+      let credentials = {
+        username: username.value,
+        password: password.value
+      }
+      await login(credentials);
       username.reset();
       password.reset();
-      blogService.getAll().then(res => {
-        //setBlogs(res);
-      });
-  } catch (exception) {
+
+    } catch (exception) {
       console.log(exception);
       //notificate error
     }
@@ -72,51 +69,44 @@ const App = (props) => {
     </form>
   );
 
-  const logout = () => {
+  const handleLogout = () => {
+    logout()
     window.localStorage.clear();
     window.location.reload();
   }
 
-  /*
-  const blogContent = () => {
-    if(initialBlogs === null) {
-      blogService.getAll().then(res => {
-        setBlogs(res);
-      });
-      }
-      return (
-      <div>
-        <h3>{user.username} is logged in <button onClick={logout}><i>logout</i></button></h3>
-        <h2>Blogs</h2>
+  if(isLogged) {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>Bloglist</h1>
+        </header>
+          <div>
+            <h3>{user.username} is logged in <button onClick={handleLogout}><i>logout</i></button></h3>
+            <h2>Blogs</h2>
+          </div>
+        <Notification />
+        <Togglable buttonLabel="Add new blog">
+          <FormBlog />
+        </Togglable>
+        <BlogList />
       </div>
-      )
-
-  };*/
-
-  let mainContent = null;
-  if(user === null) {
-    mainContent = loginForm()
+    );
   } else {
-    //mainContent = blogContent();
-    mainContent = null
+    return loginForm()
   }
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Bloglist</h1>
-      </header>
-
-      <Notification />
-      <Togglable buttonLabel="Add new blog">
-        <FormBlog />
-      </Togglable>
-      <BlogList />
-      <main>
-        {mainContent}
-      </main>
-    </div>
-  );
 }
 
-export default connect(null, null)(App);
+const mapStateToProps = state => {
+  console.log(state)
+  return {
+    user: state.login.user,
+    isLogged: state.login.logged
+  }
+}
+
+const mapDispatchToProps = {
+  login, token, setUser, logout
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

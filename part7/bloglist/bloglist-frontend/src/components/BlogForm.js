@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import blogService from '../services/blogs';
-import Notification from './Notification';
 import { useField } from '../hooks';
+import { connect } from 'react-redux'
+import { addNotification, errorNotification } from '../reducers/notificationReducer'
 
-const BlogForm = () => {
+const BlogForm = (props) => {
     //const [title, setTitle] = useState('');
     const title = useField('text');
     //const [author, setAuthor] = useState('');
     const author = useField('text');
     //const [url, setUrl] = useState('');
     const url = useField('text');
-    const [notification, setNotification] = useState(null);
 
     const addBlog = (event) => {
         event.preventDefault();
@@ -25,35 +25,18 @@ const BlogForm = () => {
             title.reset();
             author.reset();
             blogService.getAll().then(() => {
-              let notification = {
-                type: 'success',
-                message: 'add succeeded'
-              };
-              setNotification(notification);
-              setTimeout(() => {
-                setNotification(null);
-              }, 1000);
+              props.addNotification('Success!')
             })
           }
         }).catch(err => {
           console.log(err);
-          let notification = {
-            type: 'error',
-            message: 'Add failed'
-          }
-          setNotification(notification);
-          setTimeout(() => {
-            setNotification(null);
-          }, 1000);
+          props.errorNotification('Error!')
         })
 
     }
 
     return (
         <div>
-            {notification &&
-                <Notification type={notification.type} message={notification.message} />
-            }
             <form onSubmit={addBlog} style={{ margin: '20px' }}>
                 <h2>Create new</h2>
                 <div>
@@ -85,4 +68,4 @@ const BlogForm = () => {
     )
 };
 
-export default BlogForm;
+export default connect(null, { addNotification, errorNotification })(BlogForm);

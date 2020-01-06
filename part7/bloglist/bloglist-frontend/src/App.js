@@ -6,8 +6,9 @@ import login from './services/login';
 import FormBlog from './components/BlogForm';
 import Togglable from './components/Togglable';
 import { useField } from './hooks';
+import { connect } from 'react-redux'
 
-const App = () => {
+const App = (props) => {
 
   //const [username, setUsername] = useState('');
   const username = useField('text');
@@ -15,10 +16,10 @@ const App = () => {
   //const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [initialBlogs, setBlogs] = useState(null);
-  const [notification, setNotification] = useState(null);
 
 
   useEffect( () => {
+    console.log(props)
     const logged = window.localStorage.getItem('loggedUser');
     if(logged) {
         const user = JSON.parse(logged);
@@ -46,14 +47,7 @@ const App = () => {
       });
   } catch (exception) {
       console.log(exception);
-      let notification = {
-        type: 'error',
-        message: 'Login failed'
-      }
-      setNotification(notification);
-      setTimeout(() => {
-        setNotification(null);
-      }, 1000);
+      //notificate error
     }
   }
 
@@ -120,9 +114,8 @@ const App = () => {
       <header className="App-header">
         <h1>Bloglist</h1>
       </header>
-      {notification &&
-        <Notification type={notification.type} message={notification.message} />
-      }
+
+      <Notification />
       <main>
         {mainContent}
       </main>
@@ -130,4 +123,4 @@ const App = () => {
   );
 }
 
-export default App;
+export default connect(null, null)(App);

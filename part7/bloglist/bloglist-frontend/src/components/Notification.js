@@ -1,10 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { nullNotification } from '../reducers/notificationReducer';
 
-const Notification = ({ type, message }) => {
-    console.log(type, message);
+const Notification = (props) => {
+    console.log(props);
     let style = {};
-    if(type === 'error') {
+    if(props.notifications.action === 'error') {
         style = {
             'border': '1px solid red',
             'fontWeight': '600',
@@ -19,19 +21,27 @@ const Notification = ({ type, message }) => {
             'marginBottom': '10px',
         }
     }
-    if(message === null) {
-        return null;
+    if(props.notifications.message === '') {
+        return null
     }
+
     return (
         <div style={style}>
-            {message}
+            {props.notifications.message}
         </div>
     )
 };
 
-Notification.propTypes = {
-    type: PropTypes.string.isRequired,
-    message: PropTypes.string.isRequired
-};
+const mapStateToProps = state => {
+    return {
+      notifications: state.notifications
+    }
+}
 
-export default Notification;
+const mapDispatchToProps = {
+    nullNotification
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notification)
+

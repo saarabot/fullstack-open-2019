@@ -25,6 +25,7 @@ const create = async newBlog => {
 };
 
 const addLike = async updatedBlog => {
+  console.log('like!')
   const config = {
     headers: { Authorization: token },
   };

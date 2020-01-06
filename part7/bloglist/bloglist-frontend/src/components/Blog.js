@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types';
-import blogService from '../services/blogs';
 
-const Blog = ({ blog, reloadList, loggedUser }) => {
+const Blog = ({ blog, loggedUser, likeHandler, removeBlog }) => {
   const [show, setShow] = useState(false);
 
   const blogStyle = {
@@ -13,42 +12,21 @@ const Blog = ({ blog, reloadList, loggedUser }) => {
     paddingBottom: '5px',
   };
 
-  const onClickHandler = (source) => {
-    if(source === 'toggle') {
-      setShow(!show);
-    } else {
-      let temp = blog;
-      temp.likes = temp.likes +1;
-      blogService.addLike(temp).then(() => {
-        reloadList();
-      }).catch(err => {
-        console.log(err);
-      })
-    }
+  const showInfo = () => {
+    setShow(!show);
   };
-
-  const removeBlog = () => {
-    let ok = window.confirm(`remove blog: ${blog.title}`);
-    if(ok) {
-      blogService.remove(blog.id).then(() => {
-        reloadList();
-      }).catch(err => {
-        console.log(err);
-      })
-    }
-  }
 
   return (
     <div style={blogStyle}>
       <div className="blogContainer">
-        <p className="title" onClick={() => onClickHandler('toggle')} >
+        <p className="title" onClick={() => showInfo()} >
           {blog.title} {blog.author}
         </p>
         <div className="expanded" style={show ? { display: 'block' }:{ display: 'none' } }>
-          <p>{blog.likes} likes <button onClick={() => onClickHandler('like')}>Like</button></p>
+          <p>{blog.likes} likes <button onClick={() => likeHandler(blog)}>Like</button></p>
           <a href={blog.url}>{blog.url}</a>
           <p>added by {blog.user ? blog.user.username : 'anonymous'}</p>
-          {blog.user.username === loggedUser && <button onClick={removeBlog}>Remove</button>}
+          {blog.user.username === loggedUser && <button onClick={() => removeBlog(blog)}>Remove</button>}
         </div>
       </div>
     </div>

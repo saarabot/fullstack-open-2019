@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Blog from './components/Blog';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
 import login from './services/login';
@@ -7,6 +6,7 @@ import FormBlog from './components/BlogForm';
 import Togglable from './components/Togglable';
 import { useField } from './hooks';
 import { connect } from 'react-redux'
+import BlogList from './components/BlogList'
 
 const App = (props) => {
 
@@ -15,7 +15,6 @@ const App = (props) => {
   const password = useField('password');
   //const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [initialBlogs, setBlogs] = useState(null);
 
 
   useEffect( () => {
@@ -26,7 +25,7 @@ const App = (props) => {
         setUser(user);
         blogService.setToken(user.token);
         blogService.getAll().then(res => {
-          setBlogs(res);
+          //setBlogs(res);
         })
     }
   }, []);
@@ -43,7 +42,7 @@ const App = (props) => {
       username.reset();
       password.reset();
       blogService.getAll().then(res => {
-        setBlogs(res);
+        //setBlogs(res);
       });
   } catch (exception) {
       console.log(exception);
@@ -51,11 +50,6 @@ const App = (props) => {
     }
   }
 
-  const reloadList = () => {
-    blogService.getAll().then(res => {
-      setBlogs(res);
-    });
-  }
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -83,6 +77,7 @@ const App = (props) => {
     window.location.reload();
   }
 
+  /*
   const blogContent = () => {
     if(initialBlogs === null) {
       blogService.getAll().then(res => {
@@ -93,20 +88,17 @@ const App = (props) => {
       <div>
         <h3>{user.username} is logged in <button onClick={logout}><i>logout</i></button></h3>
         <h2>Blogs</h2>
-        <Togglable buttonLabel="Add new blog">
-          <FormBlog />
-        </Togglable>
-        {initialBlogs && initialBlogs.sort(function(a,b) {return b.likes - a.likes }).map(blog => <Blog key={blog.id} blog={blog} reloadList={reloadList} loggedUser={user.username}/>)}
       </div>
       )
 
-  };
+  };*/
 
   let mainContent = null;
   if(user === null) {
     mainContent = loginForm()
   } else {
-    mainContent = blogContent();
+    //mainContent = blogContent();
+    mainContent = null
   }
 
   return (
@@ -116,6 +108,10 @@ const App = (props) => {
       </header>
 
       <Notification />
+      <Togglable buttonLabel="Add new blog">
+        <FormBlog />
+      </Togglable>
+      <BlogList />
       <main>
         {mainContent}
       </main>

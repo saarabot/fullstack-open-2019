@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import blogService from '../services/blogs';
+import React from 'react';
 import { useField } from '../hooks';
 import { connect } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
 import { addNotification, errorNotification } from '../reducers/notificationReducer'
 
 const BlogForm = (props) => {
+    const { createBlog } = props
     //const [title, setTitle] = useState('');
     const title = useField('text');
     //const [author, setAuthor] = useState('');
@@ -12,26 +13,22 @@ const BlogForm = (props) => {
     //const [url, setUrl] = useState('');
     const url = useField('text');
 
-    const addBlog = (event) => {
+    const addBlog = async (event) => {
         event.preventDefault();
         const newBlog = {
           title: title.value,
           author: author.value,
           url: url.value
         }
-        blogService.create(newBlog).then(res => {
-          if(res) {
-            url.reset();
-            title.reset();
-            author.reset();
-            blogService.getAll().then(() => {
-              props.addNotification('Success!')
-            })
-          }
-        }).catch(err => {
-          console.log(err);
+        try {
+          await createBlog(newBlog)
+          props.addNotification('Success!')
+          url.reset();
+          title.reset();
+          author.reset();
+        } catch (err) {
           props.errorNotification('Error!')
-        })
+        }
 
     }
 
@@ -68,4 +65,10 @@ const BlogForm = (props) => {
     )
 };
 
-export default connect(null, { addNotification, errorNotification })(BlogForm);
+const mapDispatchToProps = {
+  createBlog,
+  addNotification,
+  errorNotification
+}
+
+export default connect(null, mapDispatchToProps)(BlogForm);

@@ -10,13 +10,13 @@ const reducer = (state = initialState, action) => {
         return {
             ...initialState,
             action: 'add',
-            message: action.message
+            message: action.data
         }
     case 'ERROR':
         return {
             ...initialState,
             action: 'error',
-            message: action.message
+            message: action.data
         }
     case 'NULL':
         return { ...state, action: '', message: '' };
@@ -25,9 +25,6 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-//action creations
-//add
-//error
 export const addNotification = (data, time = 5) => {
     return async dispatch => {
         setTimeout(() => {
@@ -38,7 +35,7 @@ export const addNotification = (data, time = 5) => {
         }, time * 1000);
         dispatch({
             type: 'ADD',
-            message: data,
+            data,
         })
     }
 };

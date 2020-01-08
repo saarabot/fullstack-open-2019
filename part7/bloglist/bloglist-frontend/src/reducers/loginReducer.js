@@ -1,7 +1,6 @@
 import loginService from '../services/login'
 
 const reducer = (state = { logged: false }, action) => {
-    console.log(action)
   switch(action.type) {
     case 'LOGIN':
         return { ...state, user: action.data, logged: true }

@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { initBlogs, deleteBlog, likeBlog, clearBlogs } from '../reducers/blogReducer'
 import Blog from './Blog'
+import FormBlog from './BlogForm';
+import Togglable from './Togglable';
 
 const BlogList = (props) => {
     const { initBlogs, deleteBlog, blogs, likeBlog, user } = props
@@ -39,6 +41,9 @@ const BlogList = (props) => {
 
     return(
         <div>
+            <Togglable buttonLabel="Add new blog">
+                <FormBlog />
+            </Togglable>
             <h2>Bloglist</h2>
             {blogs && blogs.sort(function(a,b) {return b.likes - a.likes }).map(blog => <Blog key={blog.id} blog={blog} reloadList={reloadList} loggedUser={user.username} removeBlog={remove} likeHandler={likeBlogHandler} />)}
         </div>

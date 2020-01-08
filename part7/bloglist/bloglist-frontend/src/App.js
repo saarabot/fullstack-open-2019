@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 import Notification from './components/Notification';
-import FormBlog from './components/BlogForm';
-import Togglable from './components/Togglable';
 import { useField } from './hooks';
 import { connect } from 'react-redux'
-import BlogList from './components/BlogList'
 import { login, setUser, logout } from './reducers/loginReducer'
 import { token } from './reducers/blogReducer'
+import AppMenu from './components/AppMenu'
 
 const App = (props) => {
   const { login, token, setUser, user, isLogged, logout } = props
@@ -78,18 +76,11 @@ const App = (props) => {
   if(isLogged) {
     return (
       <div className="App">
+        <Notification />
         <header className="App-header">
           <h1>Bloglist</h1>
         </header>
-          <div>
-            <h3>{user.username} is logged in <button onClick={handleLogout}><i>logout</i></button></h3>
-            <h2>Blogs</h2>
-          </div>
-        <Notification />
-        <Togglable buttonLabel="Add new blog">
-          <FormBlog />
-        </Togglable>
-        <BlogList />
+        <AppMenu user={user} handleLogout={handleLogout}/>
       </div>
     );
   } else {
@@ -98,7 +89,6 @@ const App = (props) => {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     user: state.login.user,
     isLogged: state.login.logged

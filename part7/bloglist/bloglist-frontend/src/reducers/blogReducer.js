@@ -1,7 +1,6 @@
 import blogService from '../services/blogs'
 
 const reducer = (state = [], action) => {
-    console.log(action)
   switch(action.type) {
     case 'INIT_BLOGS':
         return action.data

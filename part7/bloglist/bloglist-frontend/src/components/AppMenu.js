@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import BlogList from './BlogList'
 import UsersList from './UsersList'
 import User from './User'
+import Blog from './Blog'
 
 const AppMenu = ({ user, handleLogout }) => {
     let divStyle = {
@@ -25,6 +26,7 @@ const AppMenu = ({ user, handleLogout }) => {
             <Route exact path="/" render={() => <BlogList />} />
             <Route exact path="/users" render={() => <UsersList />} />
             <Route exact path="/user/:name" render={() => <User />} />
+            <Route exact path="/blog/:id" render={() => <Blog />} />
         </Router>
     )
 }

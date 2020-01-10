@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { getUsers, getUser } from '../reducers/userReducer'
+import { getUsers } from '../reducers/userReducer'
+import { withRouter, Link } from 'react-router-dom'
 
 const UsersList = (props) => {
     console.log(props)
@@ -16,8 +17,7 @@ const UsersList = (props) => {
     const displayUserList = () => {
         return props.users.map((user) => {
             return (<div key={user.id} style={{ 'border': '1px solid black' }}>
-                    <p>{user.name !== undefined ? user.name: 'ei nimeä' }</p>
-                    <p>{user.username !== undefined ? user.username: 'ei käyttäjänimeä' }</p>
+                    <Link to={`/user/${user.username}`}>{user.username !== undefined ? user.username: 'ei käyttäjänimeä' }</Link>
                     <p>blogs created: {user.blogs.length}</p>
                 </div>)
         })
@@ -40,4 +40,4 @@ const mapStateToProps = state => {
   }
 
 
-export default connect(mapStateToProps, { getUsers })(UsersList)
+export default withRouter(connect(mapStateToProps, { getUsers })(UsersList))

@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import BlogList from './BlogList'
 import UsersList from './UsersList'
+import User from './User'
 
 const AppMenu = ({ user, handleLogout }) => {
     let divStyle = {
@@ -23,8 +24,9 @@ const AppMenu = ({ user, handleLogout }) => {
             </div>
             <Route exact path="/" render={() => <BlogList />} />
             <Route exact path="/users" render={() => <UsersList />} />
+            <Route exact path="/user/:name" render={() => <User />} />
         </Router>
     )
 }
 
-export default AppMenu
+export default (AppMenu)

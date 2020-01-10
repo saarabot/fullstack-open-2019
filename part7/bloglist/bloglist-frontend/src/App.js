@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { login, setUser, logout } from './reducers/loginReducer'
 import { token } from './reducers/blogReducer'
 import AppMenu from './components/AppMenu'
+import { withRouter } from 'react-router-dom'
 
 const App = (props) => {
   const { login, token, setUser, user, isLogged, logout } = props
